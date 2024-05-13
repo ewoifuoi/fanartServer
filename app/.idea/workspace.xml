@@ -5,12 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="4fa05107-c775-4615-b5d6-2a88e0146fb0" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/api/user.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/utils/SendMail.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/migrations/models/0_20240412210114_init.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/migrations/models/1_20240424234819_update.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/nohup.out" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pyproject.toml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/service_check_compressed" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/image.py" beforeDir="false" afterPath="$PROJECT_DIR$/api/image.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -35,7 +35,9 @@
   &quot;associatedIndex&quot;: 5
 }</component>
   <component name="ProjectId" id="2eNucyCEZxoAZB3sfoq7xzvVJA2" />
-  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -108,7 +110,7 @@
       <workItem from="1715577234529" duration="15000" />
       <workItem from="1715577351907" duration="270000" />
       <workItem from="1715577636202" duration="1013000" />
-      <workItem from="1715581098205" duration="1111000" />
+      <workItem from="1715581098205" duration="4232000" />
     </task>
     <servers />
   </component>
@@ -127,6 +129,6 @@
     </option>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/app$main.coverage" NAME="main Coverage Results" MODIFIED="1715582100596" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/app$main.coverage" NAME="main Coverage Results" MODIFIED="1715588167633" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
