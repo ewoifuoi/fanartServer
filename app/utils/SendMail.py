@@ -22,73 +22,83 @@ class Mail(object):
 
         # 构建邮件的HTML正文内容
         body_html = f'''
-        <!DOCTYPE html>
-            <html lang="en">
-            <head>
-                <meta charset="UTF-8">
-                <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                <title>Document</title>
-            </head>
-            <body style="background-color: gainsboro;">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body >
+    <div style="background-color: gainsboro;">
+        <div style="
+        display: flex;
+        align-items: center;
+        justify-content: center;">
+            <div style="
+            
+            align-items: top;
+            justify-content: center;
+            max-width: 600px;
+            width: 800px;
+            height: 40rem;">
+
                 <div style="
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;">
-                    <div style="
-                    align-items: top;
-                    justify-content: center;
-                    max-width: 600px;
-                    width: 70%;
-                    height: 40rem;">
-                        <div style="
-                        display: flex; 
-                        justify-content: center; 
-                        padding: 20px 10px 0px 10px">
-                            <svg t="1715669299942" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="4283" width="70" height="70"><path d="M960 275.5l-112-64.7V128c0-8.8-7.2-16-16-16H711.2c-22.5 0-44.5-5.9-64-17.1L543.4 35a64.158 64.158 0 0 0-64 0L375.7 94.8c-19.5 11.2-41.5 17.2-64 17.2H192c-8.8 0-16 7.2-16 16v82.1L64 274.8C24.4 297.7 0 339.9 0 385.7V928c0 35.3 28.7 64 64 64h896c35.3 0 64-28.7 64-64V386.3c0-45.7-24.4-88-64-110.8zM527.6 99.8l8.1 4.7c3.5 2.1 2.1 7.5-2 7.5h-44.4c-4.1 0-5.5-5.4-2-7.5l8.1-4.7c9.9-5.8 22.2-5.8 32.2 0zM240 184c0-4.4 3.6-8 8-8h528c4.4 0 8 3.6 8 8v374.5c0 5.7-3 11-8 13.9l-162.3 93.7c-5 2.9-11.1 2.9-16.1 0l-54.8-32c-19.9-11.6-44.4-11.7-64.3-0.2l-52.4 30.2c-5 2.9-11.1 2.9-16 0L248 570.5c-5-2.9-8-8.1-8-13.9V184zM64 388.7c0-22.7 12.1-43.8 31.7-55.3l80.3-47V522c0 3.1-3.3 5-6 3.5L68 466.7c-2.5-1.4-4-4.1-4-6.9v-71.1z m0 470.7V552c0-6.2 6.7-10 12-6.9l100 57.7 64 37 102.2 59c5.3 3.1 5.3 10.8 0 13.9l-102.2 59-64 37-100 57.6c-5.3 3.1-12-0.8-12-6.9zM893.4 928H127c-8.2 0-11.1-10.8-4-14.9l53-30.6 64-37 178.2-102.9 64-37 12-6.9c9.9-5.7 22.1-5.7 32 0l15.5 8.9 64 37 178.3 103 64 37 49.4 28.5c7.1 4.1 4.2 14.9-4 14.9z m66.6-66.5c0 6.2-6.7 10-12 6.9l-100-57.7-64-37-102.3-59.1c-5.3-3.1-5.3-10.8 0-13.9l102.3-59 64-37L948 547c5.3-3.1 12 0.8 12 6.9v307.6z m0-399.5c0 2.9-1.5 5.5-4 6.9l-102 58.4c-2.7 1.5-6-0.4-6-3.5V286.7l80.2 46.8C947.9 345 960 366 960 388.8V462z" p-id="4284"></path><path d="M704 232v48c0 4.4-3.6 8-8 8H328c-4.4 0-8-3.6-8-8v-48c0-4.4 3.6-8 8-8h368c4.4 0 8 3.6 8 8zM704 360v48c0 4.4-3.6 8-8 8H328c-4.4 0-8-3.6-8-8v-48c0-4.4 3.6-8 8-8h368c4.4 0 8 3.6 8 8zM704 488v48c0 4.4-3.6 8-8 8H328c-4.4 0-8-3.6-8-8v-48c0-4.4 3.6-8 8-8h368c4.4 0 8 3.6 8 8z" p-id="4285"></path></svg>
-                        </div>
-                        <div style="padding: 5px; display: flex; justify-content: center;">
-                            <h1>确认电子邮件地址</h1>
-                        </div>
-                        <div style="
-                        display: flex;
-                        align-items: top;
-                        justify-content: center;
-                        background-color: white;
-                        width: 100%;
-                        height: 360px;">
-                            <div style="padding: 5px;">
-                                <div style="display: flex;justify-content: center;">
-                                    <h3>尊敬的{name}</h3>
-                                </div>
-                                <div style="display: flex;justify-content: center;">
-                                    <p>出于安全考虑,在平台注册前,需要验证您的邮箱</p>
-                                </div>
-                                <div style="display: flex;justify-content: center;">
-                                    <a href="{link}" style="
-                                    font-weight: bold;
-                                    color: white;
-                                    background-color: rgb(67, 179, 141);
-                                    border-radius: 5px;
-                                    padding: 18px 55px 18px 55px;
-                                    margin: 10px;
-                                    text-decoration: none;
-                                        ">
-                                        验证您的电子邮件
-                                    </a>
-                                </div>
-                                <div style="display: flex;justify-content: center;">
-                                    <p>或者将本链接复制并粘贴到您的浏览器中进行访问</p>
-                                </div>
-                                <div style="display: flex;justify-content: center;">
-                                    <a style="
-                                        color: rgb(67, 179, 141);" href="{link}">{link}</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                display: flex; 
+                justify-content: center; 
+                padding: 20px 10px 0px 10px">
+                    <img src="data:image/svg+xml;base64,CjxzdmcgdD0iMTcxNTY2OTI5OTk0MiIgY2xhc3M9Imljb24iIHZpZXdCb3g9IjAgMCAxMDI0IDEwMjQiIHZlcnNpb249IjEuMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiBwLWlkPSI0MjgzIiB3aWR0aD0iNzAiIGhlaWdodD0iNzAiPjxwYXRoIGQ9Ik05NjAgMjc1LjVsLTExMi02NC43VjEyOGMwLTguOC03LjItMTYtMTYtMTZINzExLjJjLTIyLjUgMC00NC41LTUuOS02NC0xNy4xTDU0My40IDM1YTY0LjE1OCA2NC4xNTggMCAwIDAtNjQgMEwzNzUuNyA5NC44Yy0xOS41IDExLjItNDEuNSAxNy4yLTY0IDE3LjJIMTkyYy04LjggMC0xNiA3LjItMTYgMTZ2ODIuMUw2NCAyNzQuOEMyNC40IDI5Ny43IDAgMzM5LjkgMCAzODUuN1Y5MjhjMCAzNS4zIDI4LjcgNjQgNjQgNjRoODk2YzM1LjMgMCA2NC0yOC43IDY0LTY0VjM4Ni4zYzAtNDUuNy0yNC40LTg4LTY0LTExMC44ek01MjcuNiA5OS44bDguMSA0LjdjMy41IDIuMSAyLjEgNy41LTIgNy41aC00NC40Yy00LjEgMC01LjUtNS40LTItNy41bDguMS00LjdjOS45LTUuOCAyMi4yLTUuOCAzMi4yIDB6TTI0MCAxODRjMC00LjQgMy42LTggOC04aDUyOGM0LjQgMCA4IDMuNiA4IDh2Mzc0LjVjMCA1LjctMyAxMS04IDEzLjlsLTE2Mi4zIDkzLjdjLTUgMi45LTExLjEgMi45LTE2LjEgMGwtNTQuOC0zMmMtMTkuOS0xMS42LTQ0LjQtMTEuNy02NC4zLTAuMmwtNTIuNCAzMC4yYy01IDIuOS0xMS4xIDIuOS0xNiAwTDI0OCA1NzAuNWMtNS0yLjktOC04LjEtOC0xMy45VjE4NHpNNjQgMzg4LjdjMC0yMi43IDEyLjEtNDMuOCAzMS43LTU1LjNsODAuMy00N1Y1MjJjMCAzLjEtMy4zIDUtNiAzLjVMNjggNDY2LjdjLTIuNS0xLjQtNC00LjEtNC02Ljl2LTcxLjF6IG0wIDQ3MC43VjU1MmMwLTYuMiA2LjctMTAgMTItNi45bDEwMCA1Ny43IDY0IDM3IDEwMi4yIDU5YzUuMyAzLjEgNS4zIDEwLjggMCAxMy45bC0xMDIuMiA1OS02NCAzNy0xMDAgNTcuNmMtNS4zIDMuMS0xMi0wLjgtMTItNi45ek04OTMuNCA5MjhIMTI3Yy04LjIgMC0xMS4xLTEwLjgtNC0xNC45bDUzLTMwLjYgNjQtMzcgMTc4LjItMTAyLjkgNjQtMzcgMTItNi45YzkuOS01LjcgMjIuMS01LjcgMzIgMGwxNS41IDguOSA2NCAzNyAxNzguMyAxMDMgNjQgMzcgNDkuNCAyOC41YzcuMSA0LjEgNC4yIDE0LjktNCAxNC45eiBtNjYuNi02Ni41YzAgNi4yLTYuNyAxMC0xMiA2LjlsLTEwMC01Ny43LTY0LTM3LTEwMi4zLTU5LjFjLTUuMy0zLjEtNS4zLTEwLjggMC0xMy45bDEwMi4zLTU5IDY0LTM3TDk0OCA1NDdjNS4zLTMuMSAxMiAwLjggMTIgNi45djMwNy42eiBtMC0zOTkuNWMwIDIuOS0xLjUgNS41LTQgNi45bC0xMDIgNTguNGMtMi43IDEuNS02LTAuNC02LTMuNVYyODYuN2w4MC4yIDQ2LjhDOTQ3LjkgMzQ1IDk2MCAzNjYgOTYwIDM4OC44VjQ2MnoiIHAtaWQ9IjQyODQiPjwvcGF0aD48cGF0aCBkPSJNNzA0IDIzMnY0OGMwIDQuNC0zLjYgOC04IDhIMzI4Yy00LjQgMC04LTMuNi04LTh2LTQ4YzAtNC40IDMuNi04IDgtOGgzNjhjNC40IDAgOCAzLjYgOCA4ek03MDQgMzYwdjQ4YzAgNC40LTMuNiA4LTggOEgzMjhjLTQuNCAwLTgtMy42LTgtOHYtNDhjMC00LjQgMy42LTggOC04aDM2OGM0LjQgMCA4IDMuNiA4IDh6TTcwNCA0ODh2NDhjMCA0LjQtMy42IDgtOCA4SDMyOGMtNC40IDAtOC0zLjYtOC04di00OGMwLTQuNCAzLjYtOCA4LThoMzY4YzQuNCAwIDggMy42IDggOHoiIHAtaWQ9IjQyODUiPjwvcGF0aD48L3N2Zz4K" alt="">
                 </div>
-            </body>
-        </html>
+                <div style="padding: 5px; display: flex; justify-content: center;">
+                    <h1>确认电子邮件地址</h1>
+                </div>
+                <div style="
+                display: flex;
+                align-items: top;
+                justify-content: center;
+                background-color: white;
+                width: 600px;
+                height: 360px;
+                box-shadow: 0 8px 20px rgba(0, 0, 0, 0.112);">
+                    <div style="padding: 5px;">
+                        <div style="display: flex;justify-content: center;">
+                            <h3>尊敬的 {name}</h3>
+                        </div>
+                        <div style="display: flex;justify-content: center;">
+                            <p>出于安全考虑,在平台注册前,需要验证您的邮箱</p>
+                        </div>
+                        <div style="display: flex;justify-content: center;">
+                            <a href="{link}" style="
+                            font-weight: bold;
+                            color: white;
+                            background-color: rgb(67, 179, 141);
+                            border-radius: 5px;
+                            padding: 18px 55px 18px 55px;
+                            margin: 10px;
+                            text-decoration: none;
+                            font-size: large;
+                            
+                                ">
+                                验证您的电子邮件
+                            </a>
+                        </div>
+                        <div style="display: flex;justify-content: center;">
+                            <p>或者将本链接复制并粘贴到您的浏览器中进行访问</p>
+                        </div>
+                        <div style="padding: 10px; display: flex;justify-content: center;">
+                            <a  style="
+                                max-width: 400px;
+                                word-wrap:break-word;
+                                color: rgb(67, 179, 141);" 
+                                href="{link}">{link}</a>
+                        </div>
+                    </div>       
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
         '''
         # 添加HTML内容到邮件中
         msg.attach(MIMEText(body_html, 'html'))

@@ -10,7 +10,7 @@ from utils.Log import Log
 
 router = APIRouter()
 
-@router.get("/random/1")
+@router.get("/random/1", description="返回一张随机图片的原图")
 async def get_image():
     count = await Image.all().count()
     if count == 0:
@@ -20,7 +20,7 @@ async def get_image():
     image_path = f"../storage/img/{img.id}"
     return FileResponse(image_path)
 
-@router.get("/random")
+@router.get("/random", description="返回一张随机图片")
 async def get_image():
     count = await Image.all().count()
     if count == 0:
@@ -31,18 +31,18 @@ async def get_image():
     return FileResponse(image_path)
 
 
-@router.get("/{name}")
+@router.get("/{name}", description="返回指定的图片")
 async def get_image(name: str):
     image_path = f"../storage/img_compressed/{name}"
     return FileResponse(image_path)
 
-@router.post("/fetch_from_pixiv")
+@router.post("/fetch_from_pixiv", description="根据画师id爬取所有作品")
 async def fetch_all_images_by_author_id(uid:str=Form(), background_tasks:BackgroundTasks=BackgroundTasks()):
     Log("成功接收请求")
     background_tasks.add_task(scraper.fetch_all_images_by_author_id, uid)
     return {"message":"请求成功"}
 
-@router.get("/")
+@router.get("/", description="画廊首页请求随机20张图片")
 async def get_images_list():
     count = await Image.all().count()
     if count == 0:
