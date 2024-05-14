@@ -1,3 +1,4 @@
+import datetime
 import secrets
 import uuid
 
@@ -29,7 +30,10 @@ class RegisterRequest(BaseModel):
 async def register(request: RegisterRequest):
     mail = Mail()
     id = secrets.token_urlsafe()
-    link = f"http://124.221.8.18:8080/register/{id}"
+    link = f"http://124.221.8.18:8080/user/register/{id}"
+
+
+
     if mail.SendMail(request.email, request.name, link):
         try:
             old = await RegistrationRequest.get_or_none(email=request.email)
@@ -54,6 +58,13 @@ async def register(request: RegisterRequest):
         return {"code": 200, "msg": "注册成功"}
     else :
         return {'code': 400, 'msg': "注册失败"}
-@router.get("/register/{id}", description="验证邮件链接接口")
-async def checkRegister(id):
-    return {"code": 200, "msg": ""}
+@router.get("/register/{uid}", description="验证邮件链接接口")
+async def checkRegister(uid):
+
+    # 首先验证邮箱激活链接是否过期
+    info = await RegistrationRequest.get_or_none(id=uid)
+    period = datetime.datetime.now() - info.timestamp
+
+
+
+    return {"code": 200, "msg": period}
