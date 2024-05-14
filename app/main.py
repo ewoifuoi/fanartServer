@@ -1,5 +1,5 @@
 import uvicorn
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, Response
 from tortoise.contrib.fastapi import register_tortoise
 
 from api import image, user
@@ -21,8 +21,16 @@ scheduler.start()
 
 @app.middleware('http')
 async def CORSMiddleware(request: Request, call_next):
+    if request.method == "OPTIONS":
+        response = Response()
+        response.headers["Access-Control-Allow-Origin"] = "*"
+        response.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"
+        response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
+        response.headers["Access-Control-Max-Age"] = "86400"
+        return response
     response = await call_next(request)
     response.headers["Access-Control-Allow-Origin"] = "*"
+
     return response
 
 @app.get("/")

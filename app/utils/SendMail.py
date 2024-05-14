@@ -58,7 +58,7 @@ class Mail(object):
                         height: 360px;">
                             <div style="padding: 5px;">
                                 <div style="display: flex;justify-content: center;">
-                                    <h4>尊敬的{name}</h4>
+                                    <h3>尊敬的{name}</h3>
                                 </div>
                                 <div style="display: flex;justify-content: center;">
                                     <p>出于安全考虑,在平台注册前,需要验证您的邮箱</p>
