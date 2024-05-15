@@ -52,21 +52,43 @@
   transform-origin: center;
 }
 
-/* Keyframes for check animation */
-@keyframes check {
-  from {
+/* Keyframes for x1 animation */
+@keyframes x1 {
+  0% {
     stroke-dasharray: 0, 95px;
-    stroke-linecap:round
+    stroke-linecap: round;
   }
-  to {
+  50% {
+    stroke-dasharray: 95px, 0;
+    stroke-linecap: round;
+  }
+  100% {
     stroke-dasharray: 95px, 95px;
-    stroke-linecap:round
+    stroke-linecap: round;
   }
 }
 
-/* Applying the check animation */
-#check {
-  animation: 0.34s cubic-bezier(0.65, 0, 1, 1) 0.8s forwards check;
+/* Applying the x1 animation */
+#x1 {
+  animation: 0.24s cubic-bezier(0.65, 0, 1, 1) 0.8s forwards x1;
+  stroke-dasharray: 0, 95px;
+}
+
+/* Keyframes for x2 animation */
+@keyframes x2 {
+  0% {
+    stroke-dasharray: 0, 95px;
+    stroke-linecap: round;
+  }
+  100% {
+    stroke-dasharray: 95px, 95px;
+    stroke-linecap: round;
+  }
+}
+
+/* Applying the x2 animation */
+#x2 {
+  animation: 0.24s cubic-bezier(0.65, 0, 1, 1) 1.05s forwards x2;
   stroke-dasharray: 0, 95px;
 }
 
@@ -87,7 +109,7 @@
 
 /* Applying the check-group animation */
 #check-group {
-  animation: 0.32s ease-in-out 1.03s check-group;
+  animation: 0.32s ease-in-out 1.43s check-group;
   transform-origin: center;
 }
 
@@ -112,16 +134,17 @@
             <div>
                 <svg width="133px" height="133px" viewBox="0 0 133 133"  xmlns="http://www.w3.org/2000/svg" >
                     <g id="check-group" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                      <circle id="filled-circle" fill="#99CC99" cx="66.5" cy="66.5" r="54.5"></circle>
+                      <circle id="filled-circle" fill="#999999" cx="66.5" cy="66.5" r="54.5"></circle>
                       <circle id="white-circle" fill="#ffffff" cx="66.5" cy="66.5" r="55.5"></circle>
-                      <circle id="outline" stroke="#99CC99" stroke-width="6" cx="66.5" cy="66.5" r="54.5"></circle>
-                      <polyline id="check"  stroke="#ffffff" stroke-width="10" points="41 70 56 85 92 49"></polyline>
+                      <circle id="outline" stroke="#999999" stroke-width="6" cx="66.5" cy="66.5" r="54.5"></circle>
+                      <line id="x1" stroke="#ffffff" stroke-width="10" x1="40" y1="40" x2="90" y2="90"></line>
+                      <line id="x2" stroke="#ffffff" stroke-width="10" x1="90" y1="40" x2="40" y2="90"></line>
                     </g>
                   </svg>
             </div>
             <div style="padding: 20px;"></div>
             <div>
-                <div style="display: block; font-size: x-large; font-weight: bolder;">您已成功完成注册</div>
+                <div style="display: block; font-size: x-large; font-weight: bolder;">验证链接已过期</div>
                 <div style="padding: 6px;"></div>
                 <div style="display: flex;">
                     <div style=" font-weight: bold; color: rgb(181, 181, 181)">即将自动跳转回主页</div>

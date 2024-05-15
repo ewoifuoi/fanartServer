@@ -7,7 +7,7 @@ from pydantic import BaseModel
 from starlette.responses import FileResponse, JSONResponse
 from starlette.templating import Jinja2Templates
 
-from models.user import RegistrationRequest
+from models.user import RegistrationRequest, User
 from utils.Log import Log, Error
 from utils.SendMail import Mail
 from models import user
@@ -60,19 +60,42 @@ async def register(request: RegisterRequest):
 @router.get("/register/{uid}", description="验证邮件链接接口")
 async def checkRegister(uid):
 
+    templates = Jinja2Templates(directory="templates")
+
     # 首先验证邮箱激活链接是否过期
     info = await RegistrationRequest.get_or_none(id=uid)
 
     if info is None :
-        return {"code": 400, "msg": "验证链接无效"}
+        return templates.TemplateResponse("verification_failed1.html", {"request": {"uid": uid}})
 
     period = (datetime.datetime.now(datetime.timezone.utc) - info.timestamp).total_seconds()
 
     if  period > 86400: # 该验证链接已过期
+
         await info.delete()
-        return {"code": 400, "msg": "验证链接已过期"}
+        templates2 = Jinja2Templates(directory="templates")
+        return templates.TemplateResponse("verification_failed2.html", {"request": {"uid": uid}})
+
     else :
-        templates = Jinja2Templates(directory="templates")
+
+        ## 用户注册逻辑
+
+        user_info = {
+            "id": info.id,
+            "password": info.password,
+            "name": info.name,
+            "avatar_url": "default_avatar.jpg",
+            "online_status": False
+        }
+
+        try:
+            await User.create(**user_info)
+
+        except Exception as e:
+            return {"code": 400, "msg": e}
+
+
+
         return templates.TemplateResponse("verification.html", {"request": {"uid": uid}})
 
 

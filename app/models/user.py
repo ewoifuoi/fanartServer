@@ -13,7 +13,7 @@ class User(Model):
     id = fields.CharField(pk=True, max_length=100)
     password = fields.CharField(max_length=100)
     name = fields.CharField(max_length=20)
-    image_url = fields.CharField(max_length=200)
+    avatar_url = fields.CharField(max_length=200)
     signup_time = fields.DatetimeField(auto_now=True)
     last_login = fields.DatetimeField(auto_now=True)
     online_status = fields.BooleanField(default=False)
