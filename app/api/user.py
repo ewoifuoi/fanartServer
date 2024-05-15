@@ -2,7 +2,7 @@ import datetime
 import secrets
 import uuid
 
-from fastapi import APIRouter, Form, BackgroundTasks
+from fastapi import APIRouter, Form, BackgroundTasks, Response
 from pydantic import BaseModel
 from starlette.responses import FileResponse, JSONResponse
 from starlette.templating import Jinja2Templates
@@ -33,6 +33,10 @@ async def register(request: RegisterRequest):
     id = secrets.token_urlsafe()
     link = f"http://124.221.8.18:8080/user/register/{id}"
 
+    isExisted = await User.get_or_none(email=request.email)
+    if isExisted:
+        return Response("该邮箱已被占用",status_code=422 )
+
     if mail.SendMail(request.email, request.name, link):
         try:
             old = await RegistrationRequest.get_or_none(email=request.email)
@@ -52,11 +56,11 @@ async def register(request: RegisterRequest):
                 )
         except Exception as e:
             Error(f"操作数据库错误{e}")
-            return {"code":400, 'msg':"注册失败"}
+            return Response("注册失败",status_code=422 )
 
         return {"code": 200, "msg": "注册成功"}
     else :
-        return {'code': 400, 'msg': "注册失败"}
+        return Response("注册失败",status_code=422 )
 @router.get("/register/{uid}", description="验证邮件链接接口")
 async def checkRegister(uid):
 
@@ -85,14 +89,16 @@ async def checkRegister(uid):
             "password": info.password,
             "name": info.name,
             "avatar_url": "default_avatar.jpg",
+            "email": info.email,
             "online_status": False
         }
 
         try:
             await User.create(**user_info)
+            await info.delete()
 
         except Exception as e:
-            return {"code": 400, "msg": e}
+            return Response({"msg": str(e)}, status_code=422 )
 
 
 
