@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>验证成功</title>
+</head>
+<style>
+
+/* Calculated values */
+:root {
+  --radius: 55px;
+  --circumf: 345px;
+  --check-len: 95px;
+  --background-color:#78B348;
+  --check-color:#ffffff;
+}
+
+/* Keyframes for outline animation */
+@keyframes outline {
+  from {
+    stroke-dasharray: 0, 345px;
+    stroke-linecap: round;
+  }
+  to {
+    stroke-dasharray: 345px, 345px;
+    stroke-linecap: round;
+  }
+}
+
+/* Applying the outline animation */
+#outline {
+  animation: 0.38s ease-in outline;
+  transform: rotate(0deg);
+  transform-origin: center;
+}
+
+/* Keyframes for circle animation */
+@keyframes circle {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(0);
+  }
+}
+
+/* Applying the circle animation */
+#white-circle {
+  animation: 0.35s ease-in 0.35s forwards circle;
+  transform: none;
+  transform-origin: center;
+}
+
+/* Keyframes for check animation */
+@keyframes check {
+  from {
+    stroke-dasharray: 0, 95px;
+    stroke-linecap:round
+  }
+  to {
+    stroke-dasharray: 95px, 95px;
+    stroke-linecap:round
+  }
+}
+
+/* Applying the check animation */
+#check {
+  animation: 0.34s cubic-bezier(0.65, 0, 1, 1) 0.8s forwards check;
+  stroke-dasharray: 0, 95px;
+}
+
+/* Keyframes for check-group animation */
+@keyframes check-group {
+  from {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.09);
+  }
+
+  to {
+    transform: scale(1);
+  }
+}
+
+/* Applying the check-group animation */
+#check-group {
+  animation: 0.32s ease-in-out 1.03s check-group;
+  transform-origin: center;
+}
+
+
+</style>
+<body style="background-color: rgba(91, 117, 157, 0.347);">
+    <div
+    style="display: flex; height: 600px;
+            align-items: flex-start; justify-content: flex-start;">
+
+        <div
+        style="background-color: white;
+        width: 600px;
+        margin: 70px;
+        display: flex; height: 60%;
+        border-radius: 20px;
+        align-items: center;
+        justify-content: flex-start;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.112);">
+
+            <div style="padding: 40px;"></div>
+            <div>
+                <svg width="133px" height="133px" viewBox="0 0 133 133"  xmlns="http://www.w3.org/2000/svg" >
+                    <g id="check-group" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                      <circle id="filled-circle" fill="#99CC99" cx="66.5" cy="66.5" r="54.5"></circle>
+                      <circle id="white-circle" fill="#ffffff" cx="66.5" cy="66.5" r="55.5"></circle>
+                      <circle id="outline" stroke="#99CC99" stroke-width="6" cx="66.5" cy="66.5" r="54.5"></circle>
+                      <polyline id="check"  stroke="#ffffff" stroke-width="10" points="41 70 56 85 92 49"></polyline>
+                    </g>
+                  </svg>
+            </div>
+            <div style="padding: 20px;"></div>
+            <div>
+                <div style="display: block; font-size: x-large; font-weight: bolder;">您已成功完成注册</div>
+                <div style="padding: 6px;"></div>
+                <div style="display: flex;">
+                    <div style=" font-weight: bold; color: rgb(181, 181, 181)">即将自动跳转回主页</div>
+                    <div style="padding: 3px;"></div>
+                    <div style=" font-weight: bold; color: rgb(181, 181, 181)" id="count">3</div>
+                    <div style=" font-weight: bold; color: rgb(181, 181, 181)">s</div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</body>
+
+<script>
+    // 在页面加载后开始倒计时
+    window.onload = function() {
+        let countDownTime = 4; // 倒计时时间，单位为秒
+
+        let item = document.getElementById('count')
+        let timer = setInterval(function() {
+            countDownTime--;
+
+            item.textContent=countDownTime.toString()
+            if (countDownTime <= 0) {
+                clearInterval(timer);
+                window.location.href = ' http://localhost:5173/'; // 在倒计时结束后跳转到百度网站
+            }
+        }, 1000);
+    };
+    </script>
+</html>

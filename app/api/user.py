@@ -5,6 +5,7 @@ import uuid
 from fastapi import APIRouter, Form, BackgroundTasks
 from pydantic import BaseModel
 from starlette.responses import FileResponse, JSONResponse
+from starlette.templating import Jinja2Templates
 
 from models.user import RegistrationRequest
 from utils.Log import Log, Error
@@ -31,8 +32,6 @@ async def register(request: RegisterRequest):
     mail = Mail()
     id = secrets.token_urlsafe()
     link = f"http://124.221.8.18:8080/user/register/{id}"
-
-
 
     if mail.SendMail(request.email, request.name, link):
         try:
@@ -63,8 +62,19 @@ async def checkRegister(uid):
 
     # 首先验证邮箱激活链接是否过期
     info = await RegistrationRequest.get_or_none(id=uid)
-    period = datetime.datetime.now() - info.timestamp
+
+    if info is None :
+        return {"code": 400, "msg": "验证链接无效"}
+
+    period = (datetime.datetime.now(datetime.timezone.utc) - info.timestamp).total_seconds()
+
+    if  period > 86400: # 该验证链接已过期
+        await info.delete()
+        return {"code": 400, "msg": "验证链接已过期"}
+    else :
+        templates = Jinja2Templates(directory="templates")
+        return templates.TemplateResponse("verification.html", {"request": {"uid": uid}})
 
 
 
-    return {"code": 200, "msg": period}
+
