@@ -77,7 +77,7 @@ async def checkRegister(uid):
     if  period > 86400: # 该验证链接已过期
 
         await info.delete()
-        templates2 = Jinja2Templates(directory="templates")
+        
         return templates.TemplateResponse("verification_failed2.html", {"request": {"uid": uid}})
 
     else :
