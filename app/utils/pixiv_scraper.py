@@ -9,6 +9,7 @@ from tortoise import Tortoise
 from models.image import Author, Image, Tag
 from settings import TORTOISE_ORM
 from utils.Log import Log, Error
+from models.server import Cookie
 
 import PIL.Image
 
@@ -34,45 +35,26 @@ headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36'
 }
 
-cookies = {
-        'first_visit_datetime_pc':'2024-01-20%2012%3A13%3A56',
-        'p_ab_id':'5',
-        'p_ab_id_2':'5',
-        'p_ab_d_id':'159194759',
-        'yuid_b':'ORNFVGA',
-        '_gcl_au':'1.1.414113310.1705720467',
-        '__utmz':'235335808.1705720468.1.1.utmcsr=google|utmccn=(organic)|utmcmd=organic|utmctr=(not%20provided)',
-        'privacy_policy_notification':'0',
-        'a_type':'0',
-        'privacy_policy_agreement':'6',
-        'login_ever':'yes',
-        'cto_bundle':'DFAPNl9IdTRVMEtRYWZkUTVONVZXamhlMElJNFQzbGJSTjRYcW5lcUw1byUyRktWQWVFYjFVViUyQjNvdzNKRGN4TFNWTDR4RG42OCUyQmNHOVN3VHQxRkd4NTdPNmhYTDFaQVR2Wk1IcXJXbGZBandUMm10b2h5MHhtdkdLb01jZTlPOUZBdGlSOGF5d0EzcmpsbTZmbkx6VkVTYyUyQmg4QSUzRCUzRA',
-        'cto_bidid':'R13TiF9BM0tIdGFkaTJaaXVIWjhPJTJGakJVYVhOVGZQdDNoWG4lMkZmM2R0eWIxaURxJTJGUVpWOUE0OG9XRmxuaWRySmR2OTlLMFlSYnVQRU82empwZ1dLNE1VTzRZeHRneTFWN2wyQ0JuMTBnRUVOUXFZMCUzRA',
-        '_ga_MZ1NL4PHH0':'GS1.1.1711787459.2.0.1711787461.0.0.0',
-        'PHPSESSID':'63904997_lpuiDvvNWVhZD4sfxGRZxNR7waycgAhl',
-        'device_token':'e96416b773740c88745429be881bf6c2',
-        'c_type':'29',
-        'b_type':'0',
-        '__utmv':'235335808.|2=login%20ever=yes=1^3=plan=normal=1^5=gender=male=1^6=user_id=63904997=1^9=p_ab_id=5=1^10=p_ab_id_2=5=1^11=lang=zh=1',
-        'QSI_S_ZN_5hF4My7Ad6VNNAi':'v:0:0',
-        '_im_vid':'01HMJE3CFRM9JFN8QW164B2QGJ',
-        '_im_uid.3929':'i.rAX3czQIQDa_ySjpvevMKA',
-        '__utmc':'235335808',
-        '_gid':'GA1.2.946958598.1711897686',
-        'cf_clearance':'ceRE_mEGuQXztKG.xsh1.CfQ85Pq9fKdqgY9JSC_EJc-1711897908-1.0.1.1-lHvgFBc5WtX3PHVgoaH.GpflWPeEdoCuCv1iR3GHLuxsao1u1E9fXB7_1NYMZnP.aSVHyvHHLYdBhq4ZvCXGrQ',
-        '__cf_bm':'ZdEwsiNYOJnOuahmv7_wNFs6a0gmwm0bVqAruyeBbzc-1711901987-1.0.1.1-btHL1dtDJeXB4BXyWZYeU8PNpubsYPPEzhSX5WN4yRtVUmtvRqRUNNupTyyCw9wGVpPsr0E0iCnvXaIj5N6qqyq0HZx56Vjo9GGwpXVZaMc',
-        '__utma':'235335808.1136182024.1705720468.1711897669.1711902020.10',
-        '__utmt':'1',
-        '__utmb':'235335808.4.10.1711902020',
-        '_ga_75BBYNYN9J':'GS1.1.1711900955.12.1.1711903299.0.0.0',
-        '_ga':'GA1.2.1136182024.1705720468',
-        '_gat_UA-1830249-3':'1',
-        'FCNEC':'%5B%5B%22AKsRol-0aXCOebiYDcAJDKF3sy0FNGOXlUZZMiUedT7hnMpvY0TYdwmPz0I6-NQr5jNHdxj7vsSl0rG_7UQGFOSNlqQNFjW9b1GRbegIDUlFgFzsb4EpSYhw9vhaXV_ATwfH49slywotVmanUu4pwPSUP1TaE84iBQ%3D%3D%22%5D%5D'
-}
+cookies = {}
 
+async def check_cookies():
+    cookie_raw = 'first_visit_datetime_pc=2024-01-20%2012%3A13%3A56; p_ab_id=5; p_ab_id_2=5; p_ab_d_id=159194759; yuid_b=ORNFVGA; __utmz=235335808.1705720468.1.1.utmcsr=google|utmccn=(organic)|utmcmd=organic|utmctr=(not%20provided); privacy_policy_notification=0; a_type=0; privacy_policy_agreement=6; _im_vid=01HMJE3CFRM9JFN8QW164B2QGJ; login_ever=yes; cto_bundle=DFAPNl9IdTRVMEtRYWZkUTVONVZXamhlMElJNFQzbGJSTjRYcW5lcUw1byUyRktWQWVFYjFVViUyQjNvdzNKRGN4TFNWTDR4RG42OCUyQmNHOVN3VHQxRkd4NTdPNmhYTDFaQVR2Wk1IcXJXbGZBandUMm10b2h5MHhtdkdLb01jZTlPOUZBdGlSOGF5d0EzcmpsbTZmbkx6VkVTYyUyQmg4QSUzRCUzRA; cto_bidid=R13TiF9BM0tIdGFkaTJaaXVIWjhPJTJGakJVYVhOVGZQdDNoWG4lMkZmM2R0eWIxaURxJTJGUVpWOUE0OG9XRmxuaWRySmR2OTlLMFlSYnVQRU82empwZ1dLNE1VTzRZeHRneTFWN2wyQ0JuMTBnRUVOUXFZMCUzRA; _im_vid=01HMJE3CFRM9JFN8QW164B2QGJ; _im_uid.3929=i.rAX3czQIQDa_ySjpvevMKA; FCNEC=%5B%5B%22AKsRol-0aXCOebiYDcAJDKF3sy0FNGOXlUZZMiUedT7hnMpvY0TYdwmPz0I6-NQr5jNHdxj7vsSl0rG_7UQGFOSNlqQNFjW9b1GRbegIDUlFgFzsb4EpSYhw9vhaXV_ATwfH49slywotVmanUu4pwPSUP1TaE84iBQ%3D%3D%22%5D%5D; _gcl_au=1.1.1552814137.1713944632; cf_clearance=TlVF6Im3eJxLjd1iaPRltAQvpsaIZcT53VmlpMajog0-1715142914-1.0.1.1-i9C6QJS.9g.7veT4BmJgFj39JAzbBoYNoY6HxIVVzCIumKz2kAhC7wdqccazGbgvg3XICi6MgAbynh.fyiNYDw; device_token=4cc2d6e926c0007437ff863cbb31f246; QSI_S_ZN_5hF4My7Ad6VNNAi=v:0:0; __utmc=235335808; cf_clearance=yWPSqy_uHHpwqoQvgENtgWBUeuytlxVhoA4zL0rw0LA-1716106904-1.0.1.1-i7C7uPv5ETxIT4b5kAeaoybKyOcaBv_gYgfKhfN277J2EOcWyLu2BaQDIgafkNr.A9sd8zkZ.S1oIXdHj8ceSg; _gid=GA1.2.1520934106.1716107229; __cf_bm=alVQRiCqEJaGjH0eQcEV2Fjt9tyzR0p7L.Fm6tXs6xk-1716128906-1.0.1.1-0lfMBXDf3XjNaxUITHcciC7Zo3NJ66h.nmGBpAhZIiXJh9qgNPGaQWJwoJV6AMTuNIt1Zdq8bc1Wo9Gv5.NKhqmIknk0YlIS0murT.H9xA0; __utma=235335808.1136182024.1705720468.1716106904.1716128907.43; __utmt=1; cc1=2024-05-19%2023%3A28%3A36; _gat_UA-1830249-3=1; _ga_MZ1NL4PHH0=GS1.1.1716128924.10.0.1716128929.0.0.0; PHPSESSID=63904997_AOv0fu0fXakvLixknZzSNfosFnF8qcQR; c_type=8; b_type=0; __utmv=235335808.|2=login%20ever=yes=1^3=plan=normal=1^5=gender=male=1^6=user_id=63904997=1^9=p_ab_id=5=1^10=p_ab_id_2=5=1^11=lang=zh=1; __utmb=235335808.3.10.1716128907; _ga_75BBYNYN9J=GS1.1.1716128909.54.1.1716128946.0.0.0; _ga=GA1.2.1136182024.1705720468'
+
+    # Splitting the string by ';' to separate key-value pairs
+    cookie_list = cookie_raw.split('; ')
+
+    # Creating a dictionary to store key-value pairs
+
+    # Looping through each key-value pair and adding it to the dictionary
+    for item in cookie_list:
+        key_value_pair = item.split('=')
+        key = key_value_pair[0]
+        value = '='.join(key_value_pair[1:])
+        cookies[key] = value
 
 
 async def fetch_all_images_by_author_id(uid):
+    await check_cookies()
     global stop_worker, count, failed_list
     stop_worker = False
     count = 0

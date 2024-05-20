@@ -6,9 +6,13 @@ from starlette.responses import FileResponse, JSONResponse
 
 import utils.pixiv_scraper as scraper
 from models.image import Image, Tag
+from models.server import Cookie
 from utils.Log import Log
 
 router = APIRouter()
+
+
+
 
 @router.get("/random/1", description="返回一张随机图片的原图")
 async def get_image():
@@ -34,6 +38,11 @@ async def get_image():
 @router.get("/{name}", description="返回指定的图片")
 async def get_image(name: str):
     image_path = f"../storage/img_compressed/{name}"
+    return FileResponse(image_path)
+
+@router.get("/origin/{name}", description="返回原图")
+async def get_image(name: str):
+    image_path = f"../storage/img/{name}"
     return FileResponse(image_path)
 
 @router.post("/fetch_from_pixiv", description="根据画师id爬取所有作品")
