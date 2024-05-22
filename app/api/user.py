@@ -1,16 +1,15 @@
 import datetime
 import secrets
-import uuid
 
 from fastapi import APIRouter, Form, BackgroundTasks, Response
 from pydantic import BaseModel
-from starlette.responses import FileResponse, JSONResponse
+
 from starlette.templating import Jinja2Templates
 
 from models.user import RegistrationRequest, User
 from utils.Log import Log, Error
 from utils.SendMail import Mail
-from models import user
+
 
 router = APIRouter()
 
@@ -33,7 +32,7 @@ async def register(request: RegisterRequest):
     id = secrets.token_urlsafe()
     link = f"http://124.221.8.18:8080/user/register/{id}"
 
-    isExisted = await User.get_or_none(email=request.email)
+    isExisted = await User.get_or_none(Email=request.email)
     if isExisted:
         return Response("该邮箱已被占用",status_code=422 )
 
@@ -85,12 +84,11 @@ async def checkRegister(uid):
         ## 用户注册逻辑
 
         user_info = {
-            "id": info.id,
-            "password": info.password,
-            "name": info.name,
-            "avatar_url": "default_avatar.jpg",
-            "email": info.email,
-            "online_status": False
+            "UserID": info.id,
+            "Password": info.password,
+            "Name": info.name,
+            "Avatar": "default_avatar.jpg",
+            "Email": info.email,
         }
 
         try:
