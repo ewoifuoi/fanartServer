@@ -1,7 +1,8 @@
 import datetime
 import secrets
 
-from fastapi import APIRouter, Form, BackgroundTasks, Response
+from fastapi import APIRouter, Form, BackgroundTasks, Response, Depends
+from fastapi.security import OAuth2PasswordRequestForm
 from pydantic import BaseModel
 
 from starlette.templating import Jinja2Templates
@@ -12,6 +13,7 @@ from utils.SendMail import Mail
 
 
 router = APIRouter()
+
 
 @router.post("/testMail", description="用于测试邮件服务")
 async def testMail(mail_to, name, link):
@@ -87,7 +89,7 @@ async def checkRegister(uid):
             "UserID": info.id,
             "Password": info.password,
             "Name": info.name,
-            "Avatar": "default_avatar.jpg",
+            "Avatar": "../storage/avatar/default_avatar.png",
             "Email": info.email,
         }
 
@@ -103,5 +105,7 @@ async def checkRegister(uid):
         return templates.TemplateResponse("verification.html", {"request": {"uid": uid}})
 
 
+@router.post("/login")
+async def login():
 
-
+    return

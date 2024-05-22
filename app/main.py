@@ -2,7 +2,7 @@ import uvicorn
 from fastapi import FastAPI, Request, Response
 from tortoise.contrib.fastapi import register_tortoise
 
-from api import image, user
+from api import image, user, test
 from services.service import scheduler
 from settings import TORTOISE_ORM
 
@@ -13,8 +13,10 @@ register_tortoise(
     app=app,
     config=TORTOISE_ORM
 )
+app.include_router(test.router,prefix="/test", tags=["系统测试"])
 app.include_router(user.router, prefix="/user", tags=["用户系统"])
 app.include_router(image.router, prefix="/image", tags=["图片爬虫部分"])
+
 
 
 scheduler.start()
