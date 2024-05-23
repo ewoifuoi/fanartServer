@@ -1,7 +1,7 @@
 import datetime
 import secrets
 
-from fastapi import APIRouter, Response,Request
+from fastapi import APIRouter, Response,Request,HTTPException
 from pydantic import BaseModel
 from starlette.templating import Jinja2Templates
 from models.user import RegistrationRequest, User
@@ -78,7 +78,7 @@ async def checkRegister(uid):
         ## 用户注册逻辑
         user_info = {
             "UserID": info.id,
-            "Password": info.password,
+            "Password": auth_handler.get_password_hash(info.password),
             "Name": info.name,
             "Avatar": "../storage/avatar/default_avatar.png",
             "Email": info.email,
@@ -93,8 +93,19 @@ async def checkRegister(uid):
 
         return templates.TemplateResponse("verification.html", {"request": {"uid": uid}})
 
-@router.post("/login")
-@auth_handler.jwt_required
-async def login(request: Request):
 
-    return "success"
+class UserLogin(BaseModel):
+    email: str
+    password: str
+
+@router.post("/login")
+async def login(request: Request, user:UserLogin):
+
+    user_db = await User.get_or_none(Email=user.email)
+    if not user_db:
+        raise HTTPException(status_code=401,detail="用户邮箱不存在")
+    if not auth_handler.verify_password(user.password, user_db.Password):
+        raise HTTPException(status_code=401,detail="邮箱或密码错误")
+    token = auth_handler.encode_token(user_db.UserID)
+    Log(f'用户登录成功, 签发token: {token}')
+    return {'token': token}
