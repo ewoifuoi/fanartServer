@@ -108,16 +108,19 @@ async def login(request: Request, user:UserLogin):
         raise HTTPException(status_code=401,detail="邮箱或密码错误")
     token = auth_handler.encode_token(user_db.UserID)
     Log(f'用户登录成功, 签发token: {token}')
-    return {'token': token}
+    return {'token': token,'username':user_db.Name,'email':user_db.Email}
 
 @router.get("/refresh")
 @auth_handler.jwt_required
 async def refresh_token(request: Request):
     token_old = request.headers.get('Authorization')
     userId = auth_handler.decode_token(token_old)['sub']
-    token_new = auth_handler.encode_token(userId)
-    Log(f'获取新token：{token_new}')
-    return {'token':token_new}
+    user_db = await User.get_or_none(UserID=userId)
+    if not user_db:
+        raise HTTPException(status_code=404,detail="用户不存在")
+    token = auth_handler.encode_token(userId)
+    Log(f'获取新token：{token}')
+    return {'token': token,'username':user_db.Name,'email':user_db.Email}
 
 @router.get("/avatar")
 @auth_handler.jwt_required
