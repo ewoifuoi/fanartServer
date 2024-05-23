@@ -113,7 +113,7 @@ async def login(request: Request, user:UserLogin):
 @router.post("/refresh")
 @auth_handler.jwt_required
 async def refresh_token(request: Request):
-
-    token = auth_handler.encode_token("1")
-    Log(f'获取新token：{token}')
-    return {'token':token}
+    token_old = request.headers.get('Authorization')
+    token_new = auth_handler.encode_token(token_old)
+    Log(f'获取新token：{token_new}')
+    return {'token':token_new}
