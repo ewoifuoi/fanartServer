@@ -1,7 +1,7 @@
 import datetime
 import secrets
 
-from fastapi import APIRouter, Response,Request,HTTPException
+from fastapi import APIRouter, Response, Request, HTTPException, Depends
 from pydantic import BaseModel
 from starlette.templating import Jinja2Templates
 from models.user import RegistrationRequest, User
@@ -109,3 +109,11 @@ async def login(request: Request, user:UserLogin):
     token = auth_handler.encode_token(user_db.UserID)
     Log(f'用户登录成功, 签发token: {token}')
     return {'token': token}
+
+@router.post("/refresh")
+@auth_handler.jwt_required
+async def refresh_token(request: Request):
+
+    token = auth_handler.encode_token("1")
+    Log(f'获取新token：{token}')
+    return {'token':token}

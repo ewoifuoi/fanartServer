@@ -36,7 +36,7 @@ class AuthHandler:
 
     def jwt_required(self, func):
         @functools.wraps(func)
-        def wrapper(request: Request,*args, **kwargs):
+        async def wrapper(request: Request,*args, **kwargs):
             token = request.headers.get('Authorization')
             if token:
                 try:
@@ -47,7 +47,7 @@ class AuthHandler:
                     raise e
             else:
                 raise HTTPException(status_code=401, detail="未授权")
-            return func(request,*args, **kwargs)
+            return await func(request,*args, **kwargs)
         return wrapper
 
 
