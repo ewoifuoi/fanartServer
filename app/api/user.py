@@ -1,19 +1,17 @@
 import datetime
 import secrets
 
-from fastapi import APIRouter, Form, BackgroundTasks, Response, Depends
-from fastapi.security import OAuth2PasswordRequestForm
+from fastapi import APIRouter, Response,Request
 from pydantic import BaseModel
-
 from starlette.templating import Jinja2Templates
-
 from models.user import RegistrationRequest, User
 from utils.Log import Log, Error
 from utils.SendMail import Mail
-
+from utils.auth import AuthHandler
 
 router = APIRouter()
 
+auth_handler = AuthHandler()
 
 @router.post("/testMail", description="用于测试邮件服务")
 async def testMail(mail_to, name, link):
@@ -62,29 +60,22 @@ async def register(request: RegisterRequest):
         return {"code": 200, "msg": "注册成功"}
     else :
         return Response("注册失败",status_code=422 )
+
 @router.get("/register/{uid}", description="验证邮件链接接口")
 async def checkRegister(uid):
-
     templates = Jinja2Templates(directory="templates")
-
     # 首先验证邮箱激活链接是否过期
     info = await RegistrationRequest.get_or_none(id=uid)
-
     if info is None :
         return templates.TemplateResponse("verification_failed1.html", {"request": {"uid": uid}})
-
     period = (datetime.datetime.now(datetime.timezone.utc) - info.timestamp).total_seconds()
-
     if  period > 86400: # 该验证链接已过期
-
         await info.delete()
-        
         return templates.TemplateResponse("verification_failed2.html", {"request": {"uid": uid}})
 
     else :
 
         ## 用户注册逻辑
-
         user_info = {
             "UserID": info.id,
             "Password": info.password,
@@ -100,12 +91,10 @@ async def checkRegister(uid):
         except Exception as e:
             return Response({"msg": str(e)}, status_code=422 )
 
-
-
         return templates.TemplateResponse("verification.html", {"request": {"uid": uid}})
 
-
 @router.post("/login")
-async def login():
+@auth_handler.jwt_required
+async def login(request: Request):
 
-    return
+    return "success"
