@@ -1,8 +1,9 @@
 import datetime
 import secrets
 
-from fastapi import APIRouter, Response, Request, HTTPException, Depends
+from fastapi import APIRouter, Response, Request, HTTPException
 from pydantic import BaseModel
+from starlette.responses import FileResponse
 from starlette.templating import Jinja2Templates
 from models.user import RegistrationRequest, User
 from utils.Log import Log, Error
@@ -100,7 +101,6 @@ class UserLogin(BaseModel):
 
 @router.post("/login")
 async def login(request: Request, user:UserLogin):
-
     user_db = await User.get_or_none(Email=user.email)
     if not user_db:
         raise HTTPException(status_code=401,detail="用户邮箱不存在")
@@ -114,6 +114,18 @@ async def login(request: Request, user:UserLogin):
 @auth_handler.jwt_required
 async def refresh_token(request: Request):
     token_old = request.headers.get('Authorization')
-    token_new = auth_handler.encode_token(auth_handler.decode_token(token_old))
+    userId = auth_handler.decode_token(token_old)['sub']
+    token_new = auth_handler.encode_token(userId)
     Log(f'获取新token：{token_new}')
     return {'token':token_new}
+
+@router.get("/avatar")
+@auth_handler.jwt_required
+async def avatar(request:Request):
+    token_old = request.headers.get('Authorization')
+    userId = auth_handler.decode_token(token_old)['sub']
+    user = await User.get_or_none(UserID=userId)
+    if not user:
+        raise HTTPException(status_code=404,detail="用户不存在")
+    return FileResponse(user.Avatar)
+

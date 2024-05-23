@@ -2,11 +2,11 @@
 import random
 
 from fastapi import APIRouter, Form, BackgroundTasks
-from starlette.responses import FileResponse, JSONResponse
+from starlette.responses import FileResponse
 
 import utils.pixiv_scraper as scraper
 from models.image import Image, Tag
-from models.server import Cookie
+
 from utils.Log import Log
 
 router = APIRouter()

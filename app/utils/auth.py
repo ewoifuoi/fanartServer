@@ -34,7 +34,7 @@ class AuthHandler:
         except jwt.InvalidTokenError as e:
             raise HTTPException(status_code=401, detail="非法token")
 
-    def jwt_required(self, func):
+    def jwt_required(self, func): # jwt 权限校验装饰器
         @functools.wraps(func)
         async def wrapper(request: Request,*args, **kwargs):
             token = request.headers.get('Authorization')
