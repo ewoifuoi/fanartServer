@@ -73,9 +73,7 @@ async def checkRegister(uid):
     if  period > 86400: # 该验证链接已过期
         await info.delete()
         return templates.TemplateResponse("verification_failed2.html", {"request": {"uid": uid}})
-
     else :
-
         ## 用户注册逻辑
         user_info = {
             "UserID": info.id,
@@ -84,7 +82,6 @@ async def checkRegister(uid):
             "Avatar": "../storage/avatar/default_avatar.png",
             "Email": info.email,
         }
-
         try:
             await User.create(**user_info)
             await info.delete()
