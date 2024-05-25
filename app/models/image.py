@@ -36,7 +36,13 @@ class User_Info(Model):
 
 
 class Author_User(Model):
-    AuthorId = fields.CharField(max_length=100, unique=True)
-    UserId = fields.CharField(max_length=100, unique=True)
+    id = fields.IntField(pk=True)
+    Author = fields.ForeignKeyField("models.Author", related_name="User")
+    User = fields.ForeignKeyField("models.User", related_name="Author")
+
+class Image_Illustration(Model):
+    id = fields.IntField(pk=True)
+    Image = fields.ForeignKeyField("models.Image", related_name="Illustration")
+    Illustration = fields.ForeignKeyField("models.Illustration", related_name="Image")
 
 
