@@ -1,3 +1,4 @@
+import asyncio
 import os
 import secrets
 
@@ -8,8 +9,9 @@ from fastapi import APIRouter,HTTPException
 from starlette.responses import FileResponse
 
 from models.illustration import Illustration
-from models.image import Image, Author, Author_User
+from models.image import Image, Author, Author_User, Image_Illustration
 from models.user import User
+from utils.Convert import convert_size
 from utils.Log import Log, Error
 from utils.auth import AuthHandler
 
@@ -95,23 +97,32 @@ async def check():
             "非法图片文件数": error_count,
             "已清除图片文件数": delete_count}
 
-@router.patch("/migrate/illustrations")
+
+@router.patch("/migrate/illustration")
 async def migrate_illustrations():
+
     images = await Image.all()
     for image in images:
-        userID = await Author_User.filter(AuthorId=image.author).values('UserId')
+        item = await Image_Illustration.get_or_none(Image=image)
+        if item is not None:
+            Log(f"Skipping:{image.id}")
+            return
+        author = await image.author
+        user_temp = await Author_User.get_or_none(Author=author).prefetch_related('User')
+        filesize = convert_size(os.path.getsize(image.location))
+        user = await user_temp.User
         info = {
             'IllustrationID': image.id,
             'Title': image.title,
             'Description': '',
-            'Location':image.location,
+            'Location': image.location,
             'Height': image.height,
             'Width': image.width,
-            'FileSize':'',
-            'FileType':image.location,
-            'LikeCount':likecount,
-            'ViewCount':viewcount,
-            'UserID': userID
+            'FileSize': filesize,
+            'FileType': image.location,
+            'LikeCount': image.likeCount,
+            'ViewCount': image.viewCount,
+            'UserID': user.UserID
         }
         await Illustration.create(**info)
         Log(f'成功迁移作品:{image.title}')

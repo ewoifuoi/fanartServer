@@ -3,7 +3,7 @@ from tortoise.fields import IntField, CharField, TextField,DatetimeField, Foreig
 
 
 class Illustration(Model):
-    IllustrationID = IntField(pk=True)
+    IllustrationID = CharField(max_length=100,pk=True)
     Title = CharField(max_length=20)
     Description = TextField(max_length=500, null=True)
     Location = CharField(max_length=100)
