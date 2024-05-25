@@ -34,3 +34,9 @@ class User_Info(Model):
     id = fields.IntField(pk=True)
     name = fields.CharField(max_length=50)
 
+
+class Author_User(Model):
+    AuthorId = fields.CharField(max_length=100, unique=True)
+    UserId = fields.CharField(max_length=100, unique=True)
+
+
