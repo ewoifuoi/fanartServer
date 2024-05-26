@@ -98,36 +98,43 @@ async def check():
             "已清除图片文件数": delete_count}
 
 
-@router.patch("/migrate/illustration")
+@router.patch("/migrate/illustration",description="作品迁移")
 async def migrate_illustrations():
-
+    count = 0
     images = await Image.all()
     for image in images:
-        item = await Image_Illustration.get_or_none(Image=image)
-        if item is not None:
-            Log(f"Skipping:{image.id}")
-            return
-        author = await image.author
-        user_temp = await Author_User.get_or_none(Author=author).prefetch_related('User')
-        filesize = convert_size(os.path.getsize(image.location))
-        user = await user_temp.User
-        info = {
-            'IllustrationID': image.id,
-            'Title': image.title,
-            'Description': '',
-            'Location': image.location,
-            'Height': image.height,
-            'Width': image.width,
-            'FileSize': filesize,
-            'FileType': image.location,
-            'LikeCount': image.likeCount,
-            'ViewCount': image.viewCount,
-            'UserID': user.UserID
-        }
-        await Illustration.create(**info)
-        Log(f'成功迁移作品:{image.title}')
+        try:
+            item = await Image_Illustration.get_or_none(Image=image)
+            if item is not None:
+                Log(f"Skipping:{image.id}")
+                continue
+            author = await image.author
+            user_temp = await Author_User.get_or_none(Author=author).prefetch_related('User')
+            filesize = convert_size(os.path.getsize(image.location))
+            user = await user_temp.User
+            filetype = image.location[-3:]
+            info = {
+                'IllustrationID': image.id,
+                'Title': image.title,
+                'Description': '',
+                'Location': image.location,
+                'Height': image.height,
+                'Width': image.width,
+                'FileSize': filesize,
+                'FileType': filetype,
+                'LikeCount': image.likeCount,
+                'ViewCount': image.viewCount,
+                'UserID': user
+            }
+            illustration = await Illustration.create(**info)
+            await Image_Illustration.create(Image=image,Illustration=illustration)
+            Log(f'成功迁移作品:{image.title}')
+            count += 1
+        except Exception as e:
+            Error(f"迁移作品失败:{image.title}:{str(e)}")
+            continue
 
-    return "迁移作品成功"
+    return f"成功迁移作品数: {count}"
 
 @router.patch("/migrate/users",description="用户迁移")
 async def migrate_users():

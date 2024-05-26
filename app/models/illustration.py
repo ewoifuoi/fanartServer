@@ -4,12 +4,12 @@ from tortoise.fields import IntField, CharField, TextField,DatetimeField, Foreig
 
 class Illustration(Model):
     IllustrationID = CharField(max_length=100,pk=True)
-    Title = CharField(max_length=20)
+    Title = CharField(max_length=100)
     Description = TextField(max_length=500, null=True)
     Location = CharField(max_length=100)
-    Height = IntField()
-    Width = IntField()
-    FileSize = IntField()
+    Height = CharField(max_length=10)
+    Width = CharField(max_length=10)
+    FileSize = CharField(max_length=10)
     FileType = CharField(max_length=10)
     LikeCount = IntField(default=0)
     ViewCount = IntField(default=0)
