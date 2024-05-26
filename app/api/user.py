@@ -5,7 +5,9 @@ from fastapi import APIRouter, Response, Request, HTTPException
 from pydantic import BaseModel
 from starlette.responses import FileResponse
 from starlette.templating import Jinja2Templates
-from models.user import RegistrationRequest, User
+
+from models.illustration import Illustration
+from models.user import RegistrationRequest, User, Relationship
 from utils.Log import Log, Error
 from utils.SendMail import Mail
 from utils.auth import AuthHandler
@@ -105,7 +107,7 @@ async def login(request: Request, user:UserLogin):
         raise HTTPException(status_code=401,detail="邮箱或密码错误")
     token = auth_handler.encode_token(user_db.UserID)
     Log(f'用户登录成功, 签发token: {token}')
-    return {'token': token,'username':user_db.Name,'email':user_db.Email}
+    return {'token': token,'username':user_db.Name,'email':user_db.Email, 'uid':user_db.UserID}
 
 @router.get("/refresh")
 @auth_handler.jwt_required
@@ -117,9 +119,9 @@ async def refresh_token(request: Request):
         raise HTTPException(status_code=404,detail="用户不存在")
     token = auth_handler.encode_token(userId)
     Log(f'获取新token：{token}')
-    return {'token': token,'username':user_db.Name,'email':user_db.Email}
+    return {'token': token,'username':user_db.Name,'email':user_db.Email, 'uid':user_db.UserID}
 
-@router.get("/avatar")
+@router.get("/avatar", description="用户获取自己头像")
 @auth_handler.jwt_required
 async def avatar(request:Request):
     token_old = request.headers.get('Authorization')
@@ -128,4 +130,38 @@ async def avatar(request:Request):
     if not user:
         raise HTTPException(status_code=404,detail="用户不存在")
     return FileResponse(user.Avatar)
+
+@router.get("/avatar/{uid}",description="获取用户头像")
+async def avatar(uid, request:Request):
+    user = await User.get_or_none(UserID=uid)
+    if not user:
+        raise HTTPException(status_code=404,detail="用户不存在")
+    return FileResponse(user.Avatar)
+
+@router.get("/profile/{uid}", description="获取用户主页信息")
+async def profile(uid,request:Request):
+    user = await User.get_or_none(UserID=uid)
+    if not user:
+        raise HTTPException(status_code=404,detail="用户不存在")
+    username = user.Name
+    email = user.Email
+    illuts = await Illustration.filter(UserID=user)
+    likecount = 0;followers = 0;following = 0;workscount = 0
+    for illut in illuts:
+        likecount += illut.LikeCount
+    followings = await Relationship.filter(UserID=user).count()
+    followers = await Relationship.filter(FollowedUserID=user).count()
+    return {
+        "username":username,
+        "email":email,
+        "workscount":workscount,
+        "followerscount":followers,
+        "followingcount":followings,
+        "likecount": likecount
+    }
+
+
+
+
+
 

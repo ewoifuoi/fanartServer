@@ -22,7 +22,7 @@ class User(Model):
 
 class Relationship(Model):
     RelationshipID = fields.IntField(pk=True)
-    UserID = fields.CharField(max_length=100)
-    FollowedUserID = fields.CharField(max_length=100)
+    UserID = fields.ForeignKeyField("models.User", related_name="followers")
+    FollowedUserID = fields.ForeignKeyField("models.User", related_name="followings")
     CreatedAt = fields.DatetimeField(auto_now=True)
 
