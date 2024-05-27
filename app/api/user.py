@@ -151,6 +151,7 @@ async def profile(uid,request:Request):
         likecount += illut.LikeCount
     followings = await Relationship.filter(UserID=user).count()
     followers = await Relationship.filter(FollowedUserID=user).count()
+    workscount = await Illustration.filter(UserID=user).count()
     return {
         "username":username,
         "email":email,

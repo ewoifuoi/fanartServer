@@ -7,7 +7,6 @@
     <list default="true" id="4fa05107-c775-4615-b5d6-2a88e0146fb0" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/api/user.py" beforeDir="false" afterPath="$PROJECT_DIR$/api/user.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/user.py" beforeDir="false" afterPath="$PROJECT_DIR$/models/user.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -129,7 +128,8 @@
       <workItem from="1716544650237" duration="21232000" />
       <workItem from="1716614625741" duration="25652000" />
       <workItem from="1716703040067" duration="11218000" />
-      <workItem from="1716727292885" duration="12223000" />
+      <workItem from="1716727292885" duration="12345000" />
+      <workItem from="1716777216751" duration="653000" />
     </task>
     <servers />
   </component>
@@ -158,6 +158,6 @@
     </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/app$main.coverage" NAME="main Coverage Results" MODIFIED="1716727306505" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/app$main.coverage" NAME="main Coverage Results" MODIFIED="1716777230396" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
