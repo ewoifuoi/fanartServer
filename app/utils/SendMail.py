@@ -19,7 +19,6 @@ class Mail(object):
         msg['From'] = self.stmp_user
         msg['To'] = receiver
         msg['Subject'] = self.subject
-
         # 构建邮件的HTML正文内容
         body_html = f'''
 <!DOCTYPE html>
@@ -36,13 +35,11 @@ class Mail(object):
         align-items: center;
         justify-content: center;">
             <div style="
-            
             align-items: top;
             justify-content: center;
             max-width: 600px;
             width: 800px;
             height: 40rem;">
-
                 <div style="
                 display: flex; 
                 justify-content: center; 

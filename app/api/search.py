@@ -17,5 +17,5 @@ async def get_works(uid):
     res = []
     for work in works:
         height = int(work.Height); width = int(work.Width)
-        res.append(f"http://124.221.8.18:8080/image/{work.IllustrationID}")
+        res.append({'url':f"http://124.221.8.18:8080/image/{work.IllustrationID}",'height':height,'width':width})
     return res
