@@ -161,6 +161,28 @@ async def profile(uid,request:Request):
         "likecount": likecount
     }
 
+@router.get("/hasWatched/{uid}", description="查询是否已关注")
+@auth_handler.jwt_required
+async def hasWatched(request:Request,uid):
+    token_old = request.headers.get('Authorization')
+    userId = auth_handler.decode_token(token_old)['sub']
+    userA = await User.get_or_none(UserID=userId)
+
+    if not userA:
+        raise HTTPException(status_code=404, detail="用户不存在")
+    userB = await User.get_or_none(UserID=uid)
+    if not userB:
+        raise HTTPException(status_code=404, detail="用户不存在")
+
+    relations = await Relationship.filter(UserID=userA,FollowedUserID=userB).count()
+    print(relations)
+    if relations > 0:
+        return True
+    else:
+        return False
+
+
+
 
 
 
