@@ -238,6 +238,23 @@ async def followings(request:Request,uid):
         res.append(temp)
     return res
 
+@router.get("/followers/{uid}", description="获得粉丝列表")
+async def followers(request:Request,uid):
+    rf = await Relationship.filter(FollowedUserID_id=uid)
+    res = []
+    for follower in rf:
+        user = await User.get_or_none(UserID=follower.UserID_id)
+        if user is None:
+            continue
+        temp = {
+            "uid": user.UserID,
+            "name":user.Name,
+            "email":user.Email,
+            "avatar":f"http://124.221.8.18:8080/user/avatar/{user.UserID}"
+        }
+        res.append(temp)
+    return res
+
 
 
 
