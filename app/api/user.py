@@ -181,6 +181,45 @@ async def hasWatched(request:Request,uid):
     else:
         return False
 
+@router.get("/follow/{uid}", description="关注用户")
+@auth_handler.jwt_required
+async def follow(request:Request,uid):
+    token_old = request.headers.get('Authorization')
+    userId = auth_handler.decode_token(token_old)['sub']
+    userA = await User.get_or_none(UserID=userId)
+    if not userA:
+        raise HTTPException(status_code=404, detail="用户不存在")
+    userB = await User.get_or_none(UserID=uid)
+    if not userB:
+        raise HTTPException(status_code=404, detail="用户不存在")
+    try:
+        await Relationship.create(UserID=userA,FollowedUserID=userB)
+    except Exception as e:
+        Error(f"关注用户失败{str(e)}")
+
+
+@router.get("/unfollow/{uid}", description="关注用户")
+@auth_handler.jwt_required
+async def unfollow(request:Request,uid):
+    token_old = request.headers.get('Authorization')
+    userId = auth_handler.decode_token(token_old)['sub']
+    userA = await User.get_or_none(UserID=userId)
+    if not userA:
+        raise HTTPException(status_code=404, detail="用户不存在")
+    userB = await User.get_or_none(UserID=uid)
+    if not userB:
+        raise HTTPException(status_code=404, detail="用户不存在")
+
+    relation = await Relationship.filter(UserID=userA, FollowedUserID=userB).first()
+
+    if relation is None:
+        raise HTTPException(status_code=404, detail="用户不存在")
+    try:
+        await relation.delete()
+        return Response(status_code=200)
+    except Exception as e:
+        Error(f"取消关注失败{str(e)}")
+        raise HTTPException(status_code=502, detail="取消关注失败")
 
 
 
