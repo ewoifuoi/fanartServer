@@ -221,6 +221,24 @@ async def unfollow(request:Request,uid):
         Error(f"取消关注失败{str(e)}")
         raise HTTPException(status_code=502, detail="取消关注失败")
 
+@router.get("/followings/{uid}", description="获得关注列表")
+async def followings(request:Request,uid):
+    rf = await Relationship.filter(UserID_id=uid)
+    res = []
+    for following in rf:
+        user = await User.get_or_none(UserID=following.FollowedUserID_id)
+        if user is None:
+            continue
+        temp = {
+            "uid": user.UserID,
+            "name":user.Name,
+            "email":user.Email,
+            "avatar":f"http://124.221.8.18:8080/user/avatar/{user.UserID}"
+        }
+        res.append(temp)
+    return res
+
+
 
 
 
