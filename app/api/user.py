@@ -6,7 +6,7 @@ from pydantic import BaseModel
 from starlette.responses import FileResponse
 from starlette.templating import Jinja2Templates
 
-from models.illustration import Illustration
+from models.illustration import Illustration, Favorite
 from models.user import RegistrationRequest, User, Relationship
 from utils.Log import Log, Error
 from utils.SendMail import Mail
@@ -254,6 +254,62 @@ async def followers(request:Request,uid):
         }
         res.append(temp)
     return res
+
+@router.get("/favorite/{illustid}", description="收藏插画")
+@auth_handler.jwt_required
+async def favorite(request:Request, illustid:str):
+    token_old = request.headers.get('Authorization')
+    userId = auth_handler.decode_token(token_old)['sub']
+    userA = await User.get_or_none(UserID=userId)
+    if not userA:
+        raise HTTPException(status_code=404, detail="用户不存在")
+    illust = await Illustration.filter(IllustrationID=illustid).first()
+    if illust is None:
+        raise HTTPException(status_code=404, detail="插画不存在")
+
+    try:
+        await Favorite.create(UserID=userA, IllustrationId=illust)
+    except Exception as e:
+        Error(str(e))
+    return Response(status_code=200)
+
+@router.get("/unfavorite/{illustid}", description="收藏插画")
+@auth_handler.jwt_required
+async def unfavorite(request:Request, illustid:str):
+    token_old = request.headers.get('Authorization')
+    userId = auth_handler.decode_token(token_old)['sub']
+    userA = await User.get_or_none(UserID=userId)
+    if not userA:
+        raise HTTPException(status_code=404, detail="用户不存在")
+    illust = await Illustration.filter(IllustrationID=illustid).first()
+    if illust is None:
+        raise HTTPException(status_code=404, detail="插画不存在")
+
+    try:
+        f = await Favorite.filter(UserID=userA, IllustrationId=illust).first()
+        await f.delete()
+    except Exception as e:
+        Error(str(e))
+    return Response(status_code=200)
+
+
+@router.get("/check_favorite/{illustid}", description="收藏插画")
+@auth_handler.jwt_required
+async def check_favorite(request:Request, illustid:str):
+    token_old = request.headers.get('Authorization')
+    userId = auth_handler.decode_token(token_old)['sub']
+    userA = await User.get_or_none(UserID=userId)
+    if not userA:
+        raise HTTPException(status_code=404, detail="用户不存在")
+    illust = await Illustration.filter(IllustrationID=illustid).first()
+    if illust is None:
+        raise HTTPException(status_code=404, detail="插画不存在")
+
+    f = await Favorite.filter(UserID=userA, IllustrationId=illust).first()
+    if f is not None:
+        return True
+    else:
+        return False
 
 
 
