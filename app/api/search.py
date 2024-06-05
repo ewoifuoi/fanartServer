@@ -28,7 +28,7 @@ async def get_favorites(uid):
     works = await Favorite.filter(UserID=user)
     res = []
     for work in works:
-        illut = work.IllustrationId
+        illut = await work.IllustrationId
         height = int(illut.Height)
         width = int(illut.Width)
         res.append({'url': f"http://124.221.8.18:8080/image/{illut.IllustrationID}", 'height': height, 'width': width})

@@ -6,7 +6,7 @@ from pydantic import BaseModel
 from starlette.responses import FileResponse
 from starlette.templating import Jinja2Templates
 
-from models.illustration import Illustration, Favorite
+from models.illustration import Illustration, Favorite, Like
 from models.user import RegistrationRequest, User, Relationship
 from utils.Log import Log, Error
 from utils.SendMail import Mail
@@ -273,7 +273,7 @@ async def favorite(request:Request, illustid:str):
         Error(str(e))
     return Response(status_code=200)
 
-@router.get("/unfavorite/{illustid}", description="收藏插画")
+@router.get("/unfavorite/{illustid}", description="取消收藏插画")
 @auth_handler.jwt_required
 async def unfavorite(request:Request, illustid:str):
     token_old = request.headers.get('Authorization')
@@ -293,7 +293,7 @@ async def unfavorite(request:Request, illustid:str):
     return Response(status_code=200)
 
 
-@router.get("/check_favorite/{illustid}", description="收藏插画")
+@router.get("/check_favorite/{illustid}", description="检查是否已收藏插画")
 @auth_handler.jwt_required
 async def check_favorite(request:Request, illustid:str):
     token_old = request.headers.get('Authorization')
@@ -311,10 +311,57 @@ async def check_favorite(request:Request, illustid:str):
     else:
         return False
 
+@router.get("/like/{illustid}", description="点赞插画")
+@auth_handler.jwt_required
+async def like(request:Request, illustid:str):
+    token_old = request.headers.get('Authorization')
+    userId = auth_handler.decode_token(token_old)['sub']
+    userA = await User.get_or_none(UserID=userId)
+    if not userA:
+        raise HTTPException(status_code=404, detail="用户不存在")
+    illust = await Illustration.filter(IllustrationID=illustid).first()
+    if illust is None:
+        raise HTTPException(status_code=404, detail="插画不存在")
 
+    try:
+        await Like.create(UserID=userA, IllustrationId=illust)
+    except Exception as e:
+        Error(str(e))
+    return Response(status_code=200)
 
+@router.get("/unlike/{illustid}", description="取消点赞插画")
+@auth_handler.jwt_required
+async def unlike(request:Request, illustid:str):
+    token_old = request.headers.get('Authorization')
+    userId = auth_handler.decode_token(token_old)['sub']
+    userA = await User.get_or_none(UserID=userId)
+    if not userA:
+        raise HTTPException(status_code=404, detail="用户不存在")
+    illust = await Illustration.filter(IllustrationID=illustid).first()
+    if illust is None:
+        raise HTTPException(status_code=404, detail="插画不存在")
 
+    try:
+        f = await Like.filter(UserID=userA, IllustrationId=illust).first()
+        await f.delete()
+    except Exception as e:
+        Error(str(e))
+    return Response(status_code=200)
 
+@router.get("/check_like/{illustid}", description="检查是否已点赞插画")
+@auth_handler.jwt_required
+async def check_like(request:Request, illustid:str):
+    token_old = request.headers.get('Authorization')
+    userId = auth_handler.decode_token(token_old)['sub']
+    userA = await User.get_or_none(UserID=userId)
+    if not userA:
+        raise HTTPException(status_code=404, detail="用户不存在")
+    illust = await Illustration.filter(IllustrationID=illustid).first()
+    if illust is None:
+        raise HTTPException(status_code=404, detail="插画不存在")
 
-
-
+    f = await Like.filter(UserID=userA, IllustrationId=illust).first()
+    if f is not None:
+        return True
+    else:
+        return False

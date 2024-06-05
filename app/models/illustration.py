@@ -25,7 +25,6 @@ class Tag(Model):
     TagName = CharField(max_length=20)
     CreatedAt = DatetimeField(auto_now_add=True)
 
-
 class IllustrationTag(Model):
     IllustrationID = ForeignKeyField('models.Illustration',related_name='IllustrationTags')
     TagID = ForeignKeyField('models.Tag',related_name='IllustrationTags')
