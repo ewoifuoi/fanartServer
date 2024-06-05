@@ -7,6 +7,7 @@ from starlette.responses import FileResponse
 from starlette.templating import Jinja2Templates
 
 from models.illustration import Illustration, Favorite, Like
+from models.notice import Notice
 from models.user import RegistrationRequest, User, Relationship
 from utils.Log import Log, Error
 from utils.SendMail import Mail
@@ -90,9 +91,7 @@ async def checkRegister(uid):
 
         except Exception as e:
             return Response({"msg": str(e)}, status_code=422 )
-
         return templates.TemplateResponse("verification.html", {"request": {"uid": uid}})
-
 
 class UserLogin(BaseModel):
     email: str
@@ -196,6 +195,10 @@ async def follow(request:Request,uid):
         await Relationship.create(UserID=userA,FollowedUserID=userB)
     except Exception as e:
         Error(f"关注用户失败{str(e)}")
+    try:
+        await Notice.create(UserID=userB, content=f"用户 {userA.Name} 关注了你")
+    except Exception as e:
+        Error(str(e))
 
 
 @router.get("/unfollow/{uid}", description="关注用户")
@@ -271,6 +274,11 @@ async def favorite(request:Request, illustid:str):
         await Favorite.create(UserID=userA, IllustrationId=illust)
     except Exception as e:
         Error(str(e))
+
+    try:
+        await Notice.create(UserID=illust.UserID, content=f"用户 {illust.UserID.Name} 收藏了你的作品 {illust.Title}", type=1)
+    except Exception as e:
+        Error(str(e))
     return Response(status_code=200)
 
 @router.get("/unfavorite/{illustid}", description="取消收藏插画")
@@ -291,7 +299,6 @@ async def unfavorite(request:Request, illustid:str):
     except Exception as e:
         Error(str(e))
     return Response(status_code=200)
-
 
 @router.get("/check_favorite/{illustid}", description="检查是否已收藏插画")
 @auth_handler.jwt_required
@@ -325,6 +332,11 @@ async def like(request:Request, illustid:str):
 
     try:
         await Like.create(UserID=userA, IllustrationId=illust)
+    except Exception as e:
+        Error(str(e))
+
+    try:
+        await Notice.create(UserID=illust.UserID, content=f"用户 {illust.UserID.Name} 赞了你的作品 {illust.Title}", type=1)
     except Exception as e:
         Error(str(e))
     return Response(status_code=200)
