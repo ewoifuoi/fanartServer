@@ -1,8 +1,6 @@
 from fastapi import APIRouter, Response, Request, HTTPException
-
 from models.notice import Notice
 from models.user import RegistrationRequest, User, Relationship
-
 from utils.auth import AuthHandler
 
 router = APIRouter()
