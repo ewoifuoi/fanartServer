@@ -1,8 +1,11 @@
+from typing import List
+
 import uvicorn
 from fastapi import FastAPI, Request, Response, APIRouter
+from starlette.websockets import WebSocket, WebSocketDisconnect
 from tortoise.contrib.fastapi import register_tortoise
 
-from api import image, user, test, search, notice, illust
+from api import image, user, test, search, notice, illust, chat
 from services.service import scheduler
 from settings import TORTOISE_ORM
 
@@ -19,6 +22,7 @@ app.include_router(user.router, prefix="/user", tags=["用户系统"])
 app.include_router(image.router, prefix="/image", tags=["图片爬虫部分"])
 app.include_router(notice.router, prefix="/notice", tags=["通知系统"])
 app.include_router(illust.router, prefix="/illust", tags=["插画页面相关信息"])
+app.include_router(chat.router, prefix="/chat", tags=["私信系统"])
 
 scheduler.start()
 

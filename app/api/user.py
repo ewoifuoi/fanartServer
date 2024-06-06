@@ -180,7 +180,7 @@ async def hasWatched(request:Request,uid):
         raise HTTPException(status_code=404, detail="用户不存在")
 
     relations = await Relationship.filter(UserID=userA,FollowedUserID=userB).count()
-    print(relations)
+
     if relations > 0:
         return True
     else:
