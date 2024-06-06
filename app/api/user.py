@@ -1,14 +1,20 @@
 import datetime
+import os
 import secrets
+import shutil
+import uuid
 
-from fastapi import APIRouter, Response, Request, HTTPException
+import PIL.Image
+from fastapi import APIRouter, Response, Request, HTTPException, UploadFile, File, Form
 from pydantic import BaseModel
 from starlette.responses import FileResponse
 from starlette.templating import Jinja2Templates
 
 from models.illustration import Illustration, Favorite, Like
+from models.image import Image
 from models.notice import Notice
 from models.user import RegistrationRequest, User, Relationship
+from services.service import service_check_compressed
 from utils.Log import Log, Error
 from utils.SendMail import Mail
 from utils.auth import AuthHandler
@@ -377,3 +383,67 @@ async def check_like(request:Request, illustid:str):
         return True
     else:
         return False
+
+@router.post("/upload", description="上传作品")
+@auth_handler.jwt_required
+async def upload(request:Request, file:UploadFile = File(...), title: str = Form(...), description: str = Form(), height: str = Form(...), width: str = Form(),filetype:str=Form(...), filesize: str =Form(...)):
+    token_old = request.headers.get('Authorization')
+    userId = auth_handler.decode_token(token_old)['sub']
+    userA = await User.get_or_none(UserID=userId)
+    if not userA:
+        raise HTTPException(status_code=404, detail="用户不存在")
+
+    info = {}
+    name = str(uuid.uuid4()) + '.' + filetype
+    path1 = "../storage/img/" + name
+    path2 = "../storage/img_compressed/" + name
+    if title is None or title == "":
+        info['Title'] = '无题'
+    else:
+        info['Title'] = title
+    info['IllustrationID'] = name
+    info['Location'] = path1
+    info['Description'] = description
+    info['Height'] = height
+    info['Width'] = width
+    info['FileSize'] = filesize
+    info['FileType'] = filetype
+
+    try:
+        with open(path1, 'wb') as f:
+            shutil.copyfileobj(file.file, f)
+            Log("写入成功: " + path1)
+        file.file.seek(0)
+        with open(path2, 'wb') as ff:
+            shutil.copyfileobj(file.file, ff)
+            Log("写入成功: " + path2)
+    except Exception as e:
+        Error("文件写入异常: " + str(e))
+        raise HTTPException(status_code=503, detail=str(e))
+
+    try:
+        with PIL.Image.open(path1) as img:
+            Log('文件完整')
+    except Exception as e:
+        Error("文件损坏: 正在重新下载" + str(e))
+        return False
+
+    try:
+        illust = await Illustration.create(
+            IllustrationID=info['IllustrationID'],
+            Title=info['Title'],
+            Description=info['Description'],
+            Location=info['Location'],
+            Height=info['Height'],
+            Width=info['Width'],
+            FileSize=info['FileSize'],
+            FileType=info['FileType'],
+            UserID=userA
+        )
+
+    except Exception as e:
+        Error("数据库写入异常: " + str(e))
+        raise HTTPException(status_code=503, detail=str(e))
+
+
+    return Response(status_code=200)
