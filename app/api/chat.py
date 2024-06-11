@@ -1,10 +1,11 @@
+from datetime import datetime
 from typing import List
 
-from fastapi import FastAPI, Request, WebSocket, APIRouter, WebSocketDisconnect, HTTPException
-from fastapi.openapi.models import Response
+from fastapi import FastAPI, Request, WebSocket, APIRouter, WebSocketDisconnect, HTTPException, Response
 
 from models.message import Message, MessageList
 from models.user import User
+from utils.Log import Error
 from utils.auth import AuthHandler
 
 
@@ -73,14 +74,21 @@ async def get_message_list(request: Request, uid:str):
     userId = auth_handler.decode_token(token_old)['sub']
     userA = await User.get_or_none(UserID=userId)
     if not userA:
+        Error("发起用户不存在")
         raise HTTPException(status_code=404, detail="用户不存在")
 
     to_user = await User.get_or_none(UserID=uid)
     if not to_user:
+        Error("接收用户不存在")
         raise HTTPException(status_code=404, detail="用户不存在")
     try:
-        await MessageList.create(owner=userA, to_user=to_user)
+        meg = await MessageList.get_or_none(owner=userA,to_user=to_user)
+        if meg is None:
+            await MessageList.create(owner=userA, to_user=to_user)
+        else:
+            await meg.save()
     except Exception as e:
+        Error(f"数据库读写失败 : {str(e)}")
         raise HTTPException(status_code=503, detail=str(e))
     return Response(status_code=200)
 

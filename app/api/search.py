@@ -13,7 +13,7 @@ async def get_works(uid):
     user = await User.get_or_none(UserID=uid)
     if user is None:
         raise HTTPException(status_code=404, detail="用户不存在")
-    works = await Illustration.filter(UserID=user)
+    works = await Illustration.filter(UserID=user).order_by('-CreatedAt')
     res = []
     for work in works:
         height = int(work.Height); width = int(work.Width)
@@ -25,7 +25,7 @@ async def get_favorites(uid):
     user = await User.get_or_none(UserID=uid)
     if user is None:
         raise HTTPException(status_code=404, detail="用户不存在")
-    works = await Favorite.filter(UserID=user)
+    works = await Favorite.filter(UserID=user).order_by('-CreatedAt')
     res = []
     for work in works:
         illut = await work.IllustrationId
